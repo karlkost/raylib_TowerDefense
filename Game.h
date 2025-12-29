@@ -1,26 +1,15 @@
 #ifndef RAYLIB_FUN_GAME_H
 #define RAYLIB_FUN_GAME_H
 
-#include "TowerManager.h"
-#include "Enemy.h"
-#include "raylib.h"
-#include "UIManager.h"
+#include "GameState.h"
+#include "MenuState.h"
+#include <memory>
 
 class Game {
-    TowerManager towerManager; //manages towers (shooting, cooldowns, sprites)
-    UIManager uiManager;
-    std::vector<Enemy> enemies; //list of enemies on screen
+    std::unique_ptr<GameState> currentState = std::make_unique<MenuState>();
 
-    Vector2 startMousePosition{}; //mouse position of when the user starts dragging
-    bool isDragging; //flag for dragging
-    bool towerEquipped; //used to display if the user equipped a tower to show how it would look when placed
-
-    void UpdateEnemies(float deltaTime, std::vector<Vector2>& waypoints);
-    void DrawEnemies() const;
-    void HandleInput(Tower &tower);
-    void CheckValidPlacement(Tower& tower);
 public:
-    Game();
+    void ChangeState(std::unique_ptr<GameState> newState);
     void run();
 };
 

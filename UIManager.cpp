@@ -3,33 +3,33 @@
 
 UIManager::UIManager() :
 playerCoins(0), playerLifeCount(0), waveNumber(0),
-state(NONE), dragArea(), mousePosition(Vector2Zero()), startDragPosition(Vector2Zero())
+state(UIState::NONE), dragArea(), mousePosition(Vector2Zero()), startDragPosition(Vector2Zero())
 {
 
 }
 
 void UIManager::Update() {
     if (IsKeyPressed('1')) {
-        if (state == PLACING_TOWER) {
-            state = NONE;
+        if (state == UIState::PLACING_TOWER) {
+            state = UIState::NONE;
             equippedTower = std::nullopt;
             ShowCursor();
         } else {
-            state = PLACING_TOWER;
+            state = UIState::PLACING_TOWER;
             HideCursor();
         }
     }
 
-    if (equippedTower.has_value() && state == PLACING_TOWER) equippedTower.value().position = GetMousePosition();
+    if (equippedTower.has_value() && state == UIState::PLACING_TOWER) equippedTower.value().position = GetMousePosition();
 
     //start of rectangle drag for multi select
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && state == NONE) {
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && state == UIState::NONE) {
         startDragPosition = GetMousePosition();
-        state = DRAG_SELECT;
+        state = UIState::DRAG_SELECT;
     }
 
     //end of rectangle drag for multi select
-    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && state == DRAG_SELECT) {
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && state == UIState::DRAG_SELECT) {
         const Vector2 endMousePosition = GetMousePosition();
 
         const float x = std::min(startDragPosition.x, endMousePosition.x);
@@ -38,13 +38,13 @@ void UIManager::Update() {
         const float height = std::abs(endMousePosition.y - startDragPosition.y);
 
         dragArea = {x, y, width, height};
-        state = NONE;
+        state = UIState::NONE;
     }
 }
 
 void UIManager::Draw() const {
     //draw UI
-    if (equippedTower.has_value() && state == PLACING_TOWER) TowerManager::DisplayPlacement(equippedTower.value(), true);
+    if (equippedTower.has_value() && state == UIState::PLACING_TOWER) TowerManager::DisplayPlacement(equippedTower.value(), true);
 
     //draw text
     DrawText(("Coins: " + std::to_string(playerCoins)).c_str(), 10, 10, 26, BLACK);

@@ -27,6 +27,14 @@ add_executable(raylib_TowerDefense main.cpp
         Animation.h
         UIManager.h
         UIManager.cpp
+        GameState.h
+        PlayingState.h
+        PlayingState.cpp
+        DebugMap.cpp
+        DebugMap.h
+        MenuState.h
+        Tower.h
+        MenuState.cpp
 )
 
 target_link_libraries(raylib_TowerDefense PRIVATE raylib)

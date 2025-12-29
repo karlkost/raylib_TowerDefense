@@ -5,7 +5,7 @@
 #include "TowerManager.h"
 #include <optional>
 
-enum UIState {
+enum class UIState {
     NONE,
     PLACING_TOWER,
     DRAG_SELECT,
