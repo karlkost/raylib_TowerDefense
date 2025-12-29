@@ -8,11 +8,13 @@
 #include "raymath.h"
 
 struct Tower {
+    //initialized params
     Animation animation; //used for sprite/animation
     float range; //how far it can attack
     float attackDelay; //how long to wait before each attack
     int damage;
 
+    //default params
     Vector2 position;
     float timeSinceAttack; //seconds since last attack
     float rotation;
@@ -32,6 +34,7 @@ public:
     void Update(float deltaTime, std::vector<Enemy>& enemies);
     void Draw() const;
     static void DisplayPlacement(const Tower& tower, bool validPlacement);
+    static void DrawTower(const Tower& tower);
     void PlaceTower(const Tower& tower);
     void SelectTowers(const Rectangle& area);
     void DeleteSelected();

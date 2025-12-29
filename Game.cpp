@@ -56,6 +56,7 @@ void Game::run() {
         HandleInput(cannonTower);
         UpdateEnemies(deltaTime, waypoints);
         towerManager.Update(deltaTime, enemies);
+        uiManager.Update();
 
         BeginDrawing();
             ClearBackground(GRAY);
@@ -67,7 +68,7 @@ void Game::run() {
 
             DrawEnemies();
             towerManager.Draw();
-            if (towerEquipped) TowerManager::DisplayPlacement(cannonTower, true);
+            uiManager.Draw();
         EndDrawing();
     }
 
@@ -111,39 +112,10 @@ void Game::DrawEnemies() const {
 
 
 void Game::HandleInput(Tower& tower) {
-    //display tower placement/place towers
-    if (IsKeyPressed('X')) {
-        if (towerEquipped) {
-            towerEquipped = false;
-            ShowCursor();
-        } else {
-            towerEquipped = true;
-            HideCursor();
-        }
-    }
-    if (towerEquipped) tower.position = GetMousePosition();
-    if (towerEquipped && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) towerManager.PlaceTower(tower);
+    tower.position = GetMousePosition();
+    if (uiManager.GetState() == PLACING_TOWER && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) towerManager.PlaceTower(tower);
 
-    //start of rectangle drag for multi select
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !towerEquipped && !isDragging) {
-        startMousePosition = GetMousePosition();
-        isDragging = true;
-    }
-
-    //end of rectangle drag for multi select
-    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && isDragging) {
-        const Vector2 endMousePosition = GetMousePosition();
-
-        const float x = std::min(startMousePosition.x, endMousePosition.x);
-        const float y = std::min(startMousePosition.y, endMousePosition.y);
-        const float width = std::abs(endMousePosition.x - startMousePosition.x);
-        const float height = std::abs(endMousePosition.y - startMousePosition.y);
-
-        const Rectangle dragArea = {x, y, width, height};
-        towerManager.SelectTowers(dragArea);
-        isDragging = false;
-    }
-
+    towerManager.SelectTowers(uiManager.GetDragArea());
     //delete selected towers
     if (GetKeyPressed() == KEY_BACKSPACE) {
         towerManager.DeleteSelected();

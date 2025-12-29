@@ -5,12 +5,12 @@
 
 struct Animation {
     Texture2D texture;
-    int maxFrames;
-    int framesPerSecond;
+    int maxFrames; //number of total frames
+    int framesPerSecond; //how many frames per second to run the animation
 
-    Rectangle rect;
-    float lastFrameChange;
-    int currentFrame;
+    Rectangle rect; //size of sprite
+    float lastFrameChange; //time since last frame change
+    int currentFrame; //current frame in the animation process
 
     Animation(const Texture2D txtr, const int frames, const int fps) :
     texture(txtr), maxFrames(frames), framesPerSecond(fps),

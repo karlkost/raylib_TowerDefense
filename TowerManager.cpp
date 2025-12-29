@@ -32,7 +32,7 @@ void TowerManager::Update(const float deltaTime, std::vector<Enemy>& enemies) {
     //TODO: animation stuff
 }
 
-void DrawTower(const Tower& tower) {
+void TowerManager::DrawTower(const Tower& tower) {
     const Rectangle& src = tower.animation.rect;
     const Rectangle dest = {tower.position.x, tower.position.y, src.width, src.height};
     const Vector2 origin = {src.width * 0.5f, src.height * 0.5f};
