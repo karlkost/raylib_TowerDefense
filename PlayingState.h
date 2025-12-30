@@ -18,6 +18,8 @@ class PlayingState : public GameState {
      Tower equippedTower;
      bool towerEquipped = false;
 
+     float debugTimer = 0.0f;
+
      void UpdateEnemies(float deltaTime);
      void DrawEnemies() const;
      void HandleInput();

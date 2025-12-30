@@ -8,8 +8,16 @@ PlayingState::PlayingState(const std::vector<Tower>& towers, const std::vector<V
     towerEquipped = false;
 }
 
+
 void PlayingState::Update(Game&, const float deltaTime) {
-    //TODO: spawn enemies
+    //TODO: spawn enemies in waves
+    debugTimer += deltaTime;
+    if (debugTimer >= 2.0f) {
+        const Enemy basicEnemy{waypoints.at(0), Vector2{10,10}, BLUE, 30, 5, waypoints.at(0), 0};
+        debugTimer = 0.0f;
+        enemies.push_back(basicEnemy);
+    }
+
 
     HandleInput();
     UpdateEnemies(deltaTime);
@@ -50,13 +58,10 @@ void PlayingState::UpdateEnemies(const float deltaTime) {
 }
 
 void PlayingState::DrawEnemies() const {
-    //TODO: just use a regular shape as an enemy for simplicity
     for (const auto& enemy : enemies) {
-        const Rectangle& src = enemy.animation.rect;
-        const Rectangle dest = {enemy.position.x, enemy.position.y, src.width, src.height};
-        const Vector2 origin = {src.width * 0.5f, src.height * 0.5f};
-
-        DrawTexturePro(enemy.animation.texture, src, dest, origin, 0.0f, WHITE);
+        const float center = enemy.size.x/2;
+        Vector2 drawPosition = {enemy.position.x - center, enemy.position.y - center};
+        DrawRectangleV(drawPosition, enemy.size, enemy.color);
     }
 }
 
