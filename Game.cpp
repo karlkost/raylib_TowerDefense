@@ -6,8 +6,11 @@ constexpr int screenWidth = 800;
 constexpr int screenHeight = 600;
 
 void Game::run() {
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "");
     SetTargetFPS(60);
+
+    //Camera2D camera{Vector2Zero(), Vector2Zero(), 0.0f, 1.0f};
 
     std::vector<Texture2D> textureList;
     //load all textures
@@ -26,6 +29,11 @@ void Game::run() {
     textureList.push_back(slimeEnemyTexture);
     textureList.push_back(cannonBallTexture);
 
+    std::vector<Tower> loadedTowers;
+    loadedTowers.push_back(cannonTower);
+
+    this->ChangeState(std::make_unique<MainMenuState>(loadedTowers));
+
     while (!WindowShouldClose())
     {
         const float deltaTime = GetFrameTime();
@@ -34,7 +42,6 @@ void Game::run() {
 
         BeginDrawing();
             ClearBackground(GRAY);
-
             currentState->Draw();
 
         EndDrawing();

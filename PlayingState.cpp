@@ -1,6 +1,12 @@
 #include "PlayingState.h"
 
-static constexpr bool DEBUG_MODE = false;
+#include <iostream>
+
+static constexpr bool DEBUG_MODE = true;
+
+PlayingState::PlayingState(const std::vector<Tower>& towers) : selectedTowers(towers), equippedTower(selectedTowers.at(0)) {
+    towerEquipped = false;
+}
 
 void PlayingState::Update(Game&, const float deltaTime) {
     //TODO: spawn enemies
@@ -12,8 +18,10 @@ void PlayingState::Update(Game&, const float deltaTime) {
 }
 
 void PlayingState::Draw() const {
-    for (const auto& point : waypoints) {
-        DrawCircleV(point, 3, GREEN);
+    if (DEBUG_MODE) {
+        for (const auto& point : waypoints) {
+            DrawCircleV(point, 3, GREEN);
+        }
     }
 
     DrawEnemies();
@@ -23,7 +31,7 @@ void PlayingState::Draw() const {
 
 void PlayingState::UpdateEnemies(const float deltaTime) {
     for (auto& enemy : enemies) {
-        //if enemy has reached close to the waypoint, go to the next waypoint
+        //if enemy has reached close to the waypoint, set target to the next waypoint
         if (Vector2Equals(enemy.position, enemy.target)) {
             enemy.currentWaypoint++;
 
@@ -43,6 +51,7 @@ void PlayingState::UpdateEnemies(const float deltaTime) {
 }
 
 void PlayingState::DrawEnemies() const {
+    //TODO: just use a regular shape as an enemy for simplicity
     for (const auto& enemy : enemies) {
         const Rectangle& src = enemy.animation.rect;
         const Rectangle dest = {enemy.position.x, enemy.position.y, src.width, src.height};
@@ -53,12 +62,14 @@ void PlayingState::DrawEnemies() const {
 }
 
 void PlayingState::HandleInput() {
-    //tower.position = GetMousePosition();
-    //if (uiManager.GetState() == UIState::PLACING_TOWER && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) towerManager.PlaceTower(tower);
+    if (IsKeyPressed(KEY_ONE)) {
+        equippedTower = selectedTowers.at(0);
+        uiManager.EquipTower(equippedTower);
+        towerEquipped = !towerEquipped;
+    }
 
-    towerManager.SelectTowers(uiManager.GetDragArea());
-    //delete selected towers
-    if (GetKeyPressed() == KEY_BACKSPACE) {
-        towerManager.DeleteSelected();
+    if (towerEquipped && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        equippedTower.position = GetMousePosition();
+        towerManager.PlaceTower(equippedTower);
     }
 }

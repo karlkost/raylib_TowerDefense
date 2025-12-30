@@ -2,11 +2,11 @@
 #define RAYLIB_FUN_GAME_H
 
 #include "GameState.h"
-#include "MenuState.h"
+#include "MainMenuState.h"
 #include <memory>
 
 class Game {
-    std::unique_ptr<GameState> currentState = std::make_unique<MenuState>();
+    std::unique_ptr<GameState> currentState;
 
 public:
     void ChangeState(std::unique_ptr<GameState> newState);
