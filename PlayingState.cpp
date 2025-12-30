@@ -1,28 +1,27 @@
 #include "PlayingState.h"
-
 #include <iostream>
 
-
-PlayingState::PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints)
-: selectedTowers(towers), waypoints(mapWaypoints), equippedTower(selectedTowers.at(0)) {
-    towerEquipped = false;
-}
-
+PlayingState::PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints, const std::vector<Rectangle>& mapHitboxes)
+: selectedTowers(towers), waypoints(mapWaypoints), hitboxes(mapHitboxes), equippedTower(selectedTowers.at(0))
+{}
 
 void PlayingState::Update(Game&, const float deltaTime) {
     //TODO: spawn enemies in waves
     debugTimer += deltaTime;
     if (debugTimer >= 2.0f) {
-        const Enemy basicEnemy{waypoints.at(0), Vector2{10,10}, BLUE, 30, 5, waypoints.at(0), 0};
+        constexpr float size = 30.0f;
+        const Enemy basicEnemy{waypoints.at(0), Vector2{size,size}, BLUE, 30, 5, waypoints.at(0), 0};
         debugTimer = 0.0f;
         enemies.push_back(basicEnemy);
     }
 
-
     HandleInput();
     UpdateEnemies(deltaTime);
     towerManager.Update(deltaTime, enemies);
-    uiManager.Update();
+    if (towerEquipped) {
+        equippedTower.position = GetMousePosition();
+        validTowerPlacement = PlacementInBounds(equippedTower);
+    }
 }
 
 void PlayingState::Draw() const {
@@ -30,10 +29,15 @@ void PlayingState::Draw() const {
         DrawCircleV(point, 3, GREEN);
     }
 
+    for (const auto& rect : hitboxes) {
+        DrawRectangleRec(rect, Color{0,0,255,50});
+    }
 
     DrawEnemies();
     towerManager.Draw();
-    uiManager.Draw();
+    if (towerEquipped) {
+        TowerManager::DisplayPlacement(equippedTower, validTowerPlacement);
+    }
 }
 
 void PlayingState::UpdateEnemies(const float deltaTime) {
@@ -59,21 +63,42 @@ void PlayingState::UpdateEnemies(const float deltaTime) {
 
 void PlayingState::DrawEnemies() const {
     for (const auto& enemy : enemies) {
+        //rectangles draw from top left so we need to calculate the center and then use that as the position vector in RectangleV so it looks centered
         const float center = enemy.size.x/2;
-        Vector2 drawPosition = {enemy.position.x - center, enemy.position.y - center};
+        const Vector2 drawPosition = {enemy.position.x - center, enemy.position.y - center};
         DrawRectangleV(drawPosition, enemy.size, enemy.color);
     }
 }
 
 void PlayingState::HandleInput() {
     if (IsKeyPressed(KEY_ONE)) {
-        equippedTower = selectedTowers.at(0);
-        uiManager.EquipTower(equippedTower);
-        towerEquipped = !towerEquipped;
+        EquipTower(selectedTowers.at(0));
     }
 
-    if (towerEquipped && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    if (towerEquipped && validTowerPlacement && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         equippedTower.position = GetMousePosition();
         towerManager.PlaceTower(equippedTower);
     }
+}
+
+void PlayingState::EquipTower(const Tower& tower) {
+    equippedTower = tower;
+    towerEquipped = !towerEquipped;
+
+    if (towerEquipped) {
+        HideCursor();
+    } else {
+        ShowCursor();
+    }
+}
+
+bool PlayingState::PlacementInBounds(Tower tower) {
+    Rectangle towerHitbox = {tower.position.x - tower.animation.rect.width/2, tower.position.y - tower.animation.rect.height/2, tower.animation.rect.width, tower.animation.rect.height};
+    for (const auto& rect : hitboxes) {
+        if (CheckCollisionRecs(rect, towerHitbox)) {
+            return false;
+        }
+    }
+
+    return towerManager.CheckTowerCollisions(towerHitbox);
 }

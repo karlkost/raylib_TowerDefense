@@ -12,6 +12,7 @@ void TowerManager::Update(const float deltaTime, std::vector<Enemy>& enemies) {
             //pick a target to attack and attack it
             for (auto& enemy : enemies) {
                 //finds the FIRST valid target within range
+                //could change to checking collision with circle & rec if enemies will only be rectangles
                 const float distanceToEnemy = Vector2Distance(tower.position, enemy.position);
                 //check for enemy health incase the update loop hasn't removed the enemy (so two towers don't attack the same target)
                 if (distanceToEnemy <= tower.range && enemy.health > 0) {
@@ -28,8 +29,6 @@ void TowerManager::Update(const float deltaTime, std::vector<Enemy>& enemies) {
             }
         }
     }
-
-    //TODO: animation stuff
 }
 
 void TowerManager::DrawTower(const Tower& tower) {
@@ -79,4 +78,15 @@ void TowerManager::SelectTowers(const Rectangle& area) {
 
 void TowerManager::DeleteSelected() {
     std::erase_if(towers, [](const Tower& t){ return t.selected; });
+}
+
+bool TowerManager::CheckTowerCollisions(const Rectangle& rect) {
+    for (const auto& tower : towers) {
+        Rectangle towerHitbox{tower.position.x - tower.animation.rect.width/2, tower.position.y - tower.animation.rect.height/2, tower.animation.rect.width, tower.animation.rect.height};
+        if (CheckCollisionRecs(towerHitbox, rect)) {
+            return false;
+        }
+    }
+
+    return true;
 }

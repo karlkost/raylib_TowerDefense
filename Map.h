@@ -7,6 +7,7 @@
 struct Map {
     Animation animation; //store the map texture and animation (if it has any, probably not)
     std::vector<Vector2> waypoints; //enemy waypoints for the map
+    std::vector<Rectangle> hitboxes; //creates rectangle hitboxes towers cant be placed between enemy waypoints
 };
 
 #endif //RAYLIB_TOWERDEFENSE_MAP_H

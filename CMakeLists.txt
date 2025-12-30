@@ -25,8 +25,6 @@ add_executable(raylib_TowerDefense main.cpp
         Game.h
         Game.cpp
         Animation.h
-        UIManager.h
-        UIManager.cpp
         GameState.h
         PlayingState.h
         PlayingState.cpp

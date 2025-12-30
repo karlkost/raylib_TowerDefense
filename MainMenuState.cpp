@@ -1,12 +1,35 @@
 #include "MainMenuState.h"
+
+#include <iostream>
+
 #include "Game.h"
 #include "PlayingState.h"
 #include "DebugMap.h"
 
+static constexpr float MAP_SIZE = 30.0f;
+
 void MainMenuState::Update(Game& game, const float deltaTime) {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         if (CheckCollisionPointRec(GetMousePosition(), playButton)) {
-            game.ChangeState(std::make_unique<PlayingState>(towers, DebugMap::GetWaypoints()));
+            //for debugging
+            const std::vector<Vector2> waypoints = DebugMap::GetWaypoints();
+
+            //create rect hitboxes so towers don't interfere with waypoints
+            std::vector<Rectangle> mapHitboxes;
+            for (int i = 0; i < waypoints.size() - 1; i++) {
+                const Vector2 waypoint1 = waypoints.at(i);
+                const Vector2 waypoint2 = waypoints.at(i + 1);
+
+                float x = std::min(waypoint1.x, waypoint2.x) - MAP_SIZE / 2;
+                float y = std::min(waypoint1.y, waypoint2.y) - MAP_SIZE / 2;
+                float width  = std::abs(waypoint2.x - waypoint1.x) + MAP_SIZE;
+                float height = std::abs(waypoint2.y - waypoint1.y) + MAP_SIZE;
+
+                Rectangle enemyPath = { x, y, width, height };
+                mapHitboxes.push_back(enemyPath);
+            }
+
+            game.ChangeState(std::make_unique<PlayingState>(towers, waypoints, mapHitboxes));
         }
     }
 }

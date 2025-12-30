@@ -18,6 +18,7 @@ public:
     void PlaceTower(const Tower& tower);
     void SelectTowers(const Rectangle& area);
     void DeleteSelected();
+    bool CheckTowerCollisions(const Rectangle& rect);
 };
 
 #endif //RAYLIB_FUN_TOWERMANAGER_H
