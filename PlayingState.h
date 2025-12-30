@@ -22,7 +22,7 @@ class PlayingState : public GameState {
      void DrawEnemies() const;
      void HandleInput();
 public:
-     PlayingState(const std::vector<Tower>& towers);
+     PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints);
 
      void Update(Game& game, float deltaTime) override;
      void Draw() const override;

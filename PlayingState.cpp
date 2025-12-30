@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-static constexpr bool DEBUG_MODE = true;
 
-PlayingState::PlayingState(const std::vector<Tower>& towers) : selectedTowers(towers), equippedTower(selectedTowers.at(0)) {
+PlayingState::PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints)
+: selectedTowers(towers), waypoints(mapWaypoints), equippedTower(selectedTowers.at(0)) {
     towerEquipped = false;
 }
 
@@ -18,11 +18,10 @@ void PlayingState::Update(Game&, const float deltaTime) {
 }
 
 void PlayingState::Draw() const {
-    if (DEBUG_MODE) {
-        for (const auto& point : waypoints) {
-            DrawCircleV(point, 3, GREEN);
-        }
+    for (const auto& point : waypoints) {
+        DrawCircleV(point, 3, GREEN);
     }
+
 
     DrawEnemies();
     towerManager.Draw();
