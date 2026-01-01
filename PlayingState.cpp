@@ -59,7 +59,6 @@ void PlayingState::SpawnEnemies(const float deltaTime) {
     timeSinceLastSpawn += deltaTime;
 
     EnemySpawn& es = currentWave.front();
-    std::cout << timeSinceLastSpawn << " " << es.spawnDelay << "\n";
     if (timeSinceLastSpawn >= es.spawnDelay) {
         timeSinceLastSpawn = 0.0f;
         currentWave.pop();
