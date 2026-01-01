@@ -38,7 +38,7 @@ void WaveDatabase::LoadWaves() {
         wave5.push(EnemySpawn{edb.slow, 0.75f});
     }
     //add a larger delay so the slow & higher health enemies go down the track a bit more
-    wave5.push(EnemySpawn{edb.fast, 2.0f});
+    wave5.push(EnemySpawn{edb.fast, 5.0f});
     for (int i = 0; i < 9; i++) {
         wave5.push(EnemySpawn{edb.fast, 0.2f});
     }

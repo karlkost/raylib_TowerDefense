@@ -45,7 +45,7 @@ void PlayingState::Draw() const {
     }
 
     for (const auto& rect : hitboxes) {
-        DrawRectangleRec(rect, Color{0,0,255,50});
+        DrawRectangleRec(rect, Color{5,50,100,255});
     }
 
     DrawEnemies();
@@ -87,6 +87,7 @@ void PlayingState::SortEnemies() {
     }
 
     enemies.clear();
+    //add the enemies back into the list based on waypoint (descending)
     for (auto& group : enemiesByWaypoints | std::views::reverse) {
         enemies.insert(enemies.end(), group.begin(), group.end());
     }
