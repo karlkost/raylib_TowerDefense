@@ -12,8 +12,8 @@ class PlayingState : public GameState {
      TowerManager towerManager; //manages towers (shooting, cooldowns, sprites)
      std::vector<Enemy> enemies; //list of enemies on screen
 
-     std::vector<Vector2> waypoints;
-     std::vector<Rectangle> hitboxes;
+     std::vector<Vector2> waypoints; //waypoints in the map which enemies go towards
+     std::vector<Rectangle> hitboxes; //hitboxes of the waypoints/map to track where towers cant be placed
 
      Tower equippedTower;
      bool towerEquipped = false;
@@ -25,7 +25,7 @@ class PlayingState : public GameState {
      void DrawEnemies() const;
      void HandleInput();
      void EquipTower(const Tower& tower);
-     bool PlacementInBounds(Tower tower);
+     bool PlacementInBounds(const Tower &tower);
 public:
      PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints, const std::vector<Rectangle>& mapHitboxes);
 

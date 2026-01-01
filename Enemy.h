@@ -13,6 +13,11 @@ struct Enemy {
 
     Vector2 target; //target position/waypoint to go towards
     int currentWaypoint; //waypoint which the enemy has reached
+
+    Enemy(const Vector2 enemyPosition, const Vector2 enemySize, const Color enemyColor, const float enemySpeed, const int enemyHealth) :
+    position(enemyPosition), size(enemySize), color(enemyColor), speed(enemySpeed), health(enemyHealth),
+    target(enemyPosition), currentWaypoint(0)
+    {}
 };
 
 #endif //RAYLIB_FUN_ENEMY_H

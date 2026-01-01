@@ -82,7 +82,7 @@ void TowerManager::DeleteSelected() {
 
 bool TowerManager::CheckTowerCollisions(const Rectangle& rect) {
     for (const auto& tower : towers) {
-        Rectangle towerHitbox{tower.position.x - tower.animation.rect.width/2, tower.position.y - tower.animation.rect.height/2, tower.animation.rect.width, tower.animation.rect.height};
+        const Rectangle towerHitbox{tower.position.x - tower.animation.rect.width/2, tower.position.y - tower.animation.rect.height/2, tower.animation.rect.width, tower.animation.rect.height};
         if (CheckCollisionRecs(towerHitbox, rect)) {
             return false;
         }
