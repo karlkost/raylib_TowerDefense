@@ -1,18 +1,29 @@
 #include "PlayingState.h"
 #include <iostream>
 
-PlayingState::PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints, const std::vector<Rectangle>& mapHitboxes)
-: selectedTowers(towers), waypoints(mapWaypoints), hitboxes(mapHitboxes), equippedTower(selectedTowers.at(0))
+PlayingState::PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints,
+    const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& mapWaves)
+: selectedTowers(towers), waypoints(mapWaypoints), hitboxes(mapHitboxes), equippedTower(selectedTowers.at(0)), waves(mapWaves)
 {}
 
 void PlayingState::Update(Game&, const float deltaTime) {
-    //TODO: spawn enemies in waves
-    debugTimer += deltaTime;
-    if (debugTimer >= 2.0f) {
-        constexpr float size = 30.0f;
-        const Enemy basicEnemy{waypoints.front(), Vector2{size,size}, BLUE, 30, 5};
-        debugTimer = 0.0f;
-        enemies.push_back(basicEnemy);
+    //wait 10 seconds to give the player time to prepare
+    if (startTimer >= 1.0f) {
+        if (!waves.empty() && currentWave.empty() && enemies.empty()) {
+            currentWave = waves.front();
+            waves.pop();
+        }
+
+        //check if current wave still has enemies
+        if (!currentWave.empty()) {
+            //spawn an enemy if it has more
+            SpawnEnemies(deltaTime);
+        } else if (waves.empty()) {
+            //game is won
+        }
+
+    } else {
+        startTimer += deltaTime;
     }
 
     HandleInput();
@@ -37,6 +48,23 @@ void PlayingState::Draw() const {
     towerManager.Draw();
     if (towerEquipped) {
         TowerManager::DisplayPlacement(equippedTower, validTowerPlacement);
+    }
+}
+
+void PlayingState::SpawnEnemies(const float deltaTime) {
+    timeSinceLastSpawn += deltaTime;
+
+    EnemySpawn& es = currentWave.front();
+    std::cout << timeSinceLastSpawn << " " << es.spawnDelay << "\n";
+    if (timeSinceLastSpawn >= es.spawnDelay) {
+        timeSinceLastSpawn = 0.0f;
+        currentWave.pop();
+
+        Enemy e = es.enemy;
+        e.position = waypoints.front();
+        e.target = waypoints.front();
+
+        enemies.push_back(e);
     }
 }
 

@@ -3,12 +3,12 @@
 #include "EnemyDatabase.h"
 #include <vector>
 #include "raylib.h"
+#include "WaveDatabase.h"
 
 constexpr int screenWidth = 800;
 constexpr int screenHeight = 600;
 
 void Game::run() {
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "");
     SetTargetFPS(60);
 
@@ -20,21 +20,15 @@ void Game::run() {
     const Animation cannonTowerAnimator{cannonTowerTexture, 1, 0};
     Tower cannonTower{cannonTowerAnimator, 50, 1, 1};
 
-    const Texture2D slimeEnemyTexture = LoadTexture("textures/raylib_slime.png");
-    const Animation slimeEnemyAnimator{slimeEnemyTexture, 1, 0};
-    //Enemy slime{slimeEnemyAnimator, Vector2Zero(), 30.0f, 5, Vector2Zero(), 0};
-
-    const Texture2D cannonBallTexture = LoadTexture("textures/raylib_cannon_ball.png");
-    const Animation cannonBallAnimator{cannonBallTexture, 4, 8};
+    //const Texture2D cannonBallTexture = LoadTexture("textures/raylib_cannon_ball.png");
+    //const Animation cannonBallAnimator{cannonBallTexture, 4, 8};
 
     textureList.push_back(cannonTowerTexture);
-    textureList.push_back(slimeEnemyTexture);
-    textureList.push_back(cannonBallTexture);
 
     std::vector<Tower> loadedTowers;
     loadedTowers.push_back(cannonTower);
 
-    EnemyDatabase::LoadEnemies();
+    WaveDatabase::LoadWaves();
 
     this->ChangeState(std::make_unique<MainMenuState>(loadedTowers));
 

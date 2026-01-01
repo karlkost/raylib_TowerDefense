@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "PlayingState.h"
 #include "DebugMap.h"
+#include "WaveDatabase.h"
 
 static constexpr float MAP_SIZE = 30.0f;
 
@@ -29,7 +30,7 @@ void MainMenuState::Update(Game& game, const float deltaTime) {
                 mapHitboxes.push_back(enemyPath);
             }
 
-            game.ChangeState(std::make_unique<PlayingState>(towers, waypoints, mapHitboxes));
+            game.ChangeState(std::make_unique<PlayingState>(towers, waypoints, mapHitboxes, WaveDatabase::waves));
         }
     }
 }

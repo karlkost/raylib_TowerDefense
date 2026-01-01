@@ -35,6 +35,8 @@ add_executable(raylib_TowerDefense main.cpp
         MainMenuState.cpp
         EnemyDatabase.h
         EnemyDatabase.cpp
+        WaveDatabase.cpp
+        WaveDatabase.h
 )
 
 target_link_libraries(raylib_TowerDefense PRIVATE raylib)

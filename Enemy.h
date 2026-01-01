@@ -20,4 +20,9 @@ struct Enemy {
     {}
 };
 
+struct EnemySpawn {
+    Enemy enemy;
+    float spawnDelay;
+};
+
 #endif //RAYLIB_TOWERDEFENSE_ENEMY_H
