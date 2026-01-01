@@ -1,8 +1,11 @@
 #include "PlayingState.h"
+
+#include <algorithm>
+#include <ranges>
 #include <iostream>
 
 PlayingState::PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints,
-    const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& mapWaves)
+                           const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& mapWaves)
 : selectedTowers(towers), waypoints(mapWaypoints), hitboxes(mapHitboxes), equippedTower(selectedTowers.at(0)), waves(mapWaves)
 {}
 
@@ -28,6 +31,7 @@ void PlayingState::Update(Game&, const float deltaTime) {
 
     HandleInput();
     UpdateEnemies(deltaTime);
+    SortEnemies();
     towerManager.Update(deltaTime, enemies);
     if (towerEquipped) {
         equippedTower.position = GetMousePosition();
@@ -65,6 +69,27 @@ void PlayingState::SpawnEnemies(const float deltaTime) {
         e.target = waypoints.front();
 
         enemies.push_back(e);
+    }
+}
+
+void PlayingState::SortEnemies() {
+    std::vector<std::vector<Enemy>> enemiesByWaypoints{waypoints.size()};
+
+    //store enemies by waypoints
+    for (auto& e : enemies) {
+        enemiesByWaypoints.at(e.currentWaypoint).push_back(e);
+    }
+
+    //sort enemies in their waypoint groups by how close they are to their next waypoint
+    for (auto& group : enemiesByWaypoints) {
+        std::ranges::sort(group, [](const Enemy& a, const Enemy& b) {
+           return Vector2DistanceSqr(a.position, a.target) < Vector2DistanceSqr(b.position, b.target);
+        });
+    }
+
+    enemies.clear();
+    for (auto& group : enemiesByWaypoints | std::views::reverse) {
+        enemies.insert(enemies.end(), group.begin(), group.end());
     }
 }
 

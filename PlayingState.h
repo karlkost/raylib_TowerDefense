@@ -28,6 +28,7 @@ class PlayingState : public GameState {
      float timeSinceLastSpawn = 0.0f;
 
      void SpawnEnemies(float deltaTime);
+     void SortEnemies();
      void UpdateEnemies(float deltaTime);
      void DrawEnemies() const;
      void HandleInput();
