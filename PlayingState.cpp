@@ -149,11 +149,13 @@ bool PlayingState::PlacementInBounds(const Tower& tower) {
     const Rectangle towerHitbox = {tower.position.x - tower.animation.rect.width/2, tower.position.y - tower.animation.rect.height/2,
         tower.animation.rect.width, tower.animation.rect.height};
 
+    //check path hitboxes
     for (const auto& rect : hitboxes) {
         if (CheckCollisionRecs(rect, towerHitbox)) {
             return false;
         }
     }
 
+    //check placed tower hitboxes
     return towerManager.CheckTowerCollisions(towerHitbox);
 }
