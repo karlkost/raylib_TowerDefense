@@ -1,5 +1,5 @@
-#ifndef RAYLIB_FUN_TOWERMANAGER_H
-#define RAYLIB_FUN_TOWERMANAGER_H
+#ifndef RAYLIB_TOWERDEFENSE_TOWERMANAGER_H
+#define RAYLIB_TOWERDEFENSE_TOWERMANAGER_H
 
 #include "Tower.h"
 #include "Enemy.h"
@@ -21,4 +21,4 @@ public:
     bool CheckTowerCollisions(const Rectangle& rect);
 };
 
-#endif //RAYLIB_FUN_TOWERMANAGER_H
+#endif //RAYLIB_TOWERDEFENSE_TOWERMANAGER_H

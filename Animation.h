@@ -1,5 +1,5 @@
-#ifndef RAYLIB_FUN_ANIMATION_H
-#define RAYLIB_FUN_ANIMATION_H
+#ifndef RAYLIB_TOWERDEFENSE_ANIMATION_H
+#define RAYLIB_TOWERDEFENSE_ANIMATION_H
 
 #include "raylib.h"
 
@@ -19,4 +19,4 @@ struct Animation {
     {}
 };
 
-#endif //RAYLIB_FUN_ANIMATION_H
+#endif //RAYLIB_TOWERDEFENSE_ANIMATION_H

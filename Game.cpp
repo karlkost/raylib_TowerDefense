@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "MainMenuState.h"
+#include "EnemyDatabase.h"
 #include <vector>
 #include "raylib.h"
 
@@ -32,6 +33,8 @@ void Game::run() {
 
     std::vector<Tower> loadedTowers;
     loadedTowers.push_back(cannonTower);
+
+    EnemyDatabase::LoadEnemies();
 
     this->ChangeState(std::make_unique<MainMenuState>(loadedTowers));
 

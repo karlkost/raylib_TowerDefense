@@ -33,7 +33,8 @@ add_executable(raylib_TowerDefense main.cpp
         MainMenuState.h
         Tower.h
         MainMenuState.cpp
-        Map.h
+        EnemyDatabase.h
+        EnemyDatabase.cpp
 )
 
 target_link_libraries(raylib_TowerDefense PRIVATE raylib)

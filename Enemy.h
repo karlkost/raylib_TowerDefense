@@ -1,5 +1,5 @@
-#ifndef RAYLIB_FUN_ENEMY_H
-#define RAYLIB_FUN_ENEMY_H
+#ifndef RAYLIB_TOWERDEFENSE_ENEMY_H
+#define RAYLIB_TOWERDEFENSE_ENEMY_H
 
 #include "raylib.h"
 
@@ -20,4 +20,4 @@ struct Enemy {
     {}
 };
 
-#endif //RAYLIB_FUN_ENEMY_H
+#endif //RAYLIB_TOWERDEFENSE_ENEMY_H
