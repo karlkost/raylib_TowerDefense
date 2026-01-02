@@ -1,7 +1,7 @@
 # Raylib Tower Defense
 
 ## Project Description
-This project was created to learn and practice using C++ 20 by creating a game using the [Raylib](https://www.raylib.com/) graphics library with data and object-oriented design.
+This project was created to learn and practice using C++ 20 by creating a game using the [Raylib](https://www.raylib.com/) graphics library with data and object-oriented programming.
 The goal of this game is to prevent the enemies reaching the end of the path by placing towers which will shoot at them.
 
 ## Screenshots
