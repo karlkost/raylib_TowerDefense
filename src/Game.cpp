@@ -35,11 +35,11 @@ void Game::run() {
     {
         const float deltaTime = GetFrameTime();
 
-        currentState->Update(*this, deltaTime);
+        m_currentState->Update(*this, deltaTime);
 
         BeginDrawing();
             ClearBackground(GRAY);
-            currentState->Draw();
+            m_currentState->Draw();
 
         EndDrawing();
     }
@@ -52,5 +52,5 @@ void Game::run() {
 }
 
 void Game::ChangeState(std::unique_ptr<GameState> newState) {
-    currentState = std::move(newState);
+    m_currentState = std::move(newState);
 }

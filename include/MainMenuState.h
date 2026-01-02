@@ -6,15 +6,15 @@
 #include <vector>
 
 class MainMenuState : public GameState {
-    std::vector<Tower>& towers; //towers in game that the player can select
+    std::vector<Tower>& m_towers; //towers in game that the player can select
 
-    std::vector<Tower> selectedTowers; //selected towers to be used in game
-    Rectangle playButton{300, 300, 200, 100};
-    Rectangle selectTowersButton{300, 500, 200, 100};
+    std::vector<Tower> m_selectedTowers; //selected towers to be used in game
+    Rectangle m_playButton{300, 300, 200, 100};
+    Rectangle m_selectTowersButton{300, 500, 200, 100};
 
 
 public:
-    MainMenuState(std::vector<Tower>& loadedTowers) : towers(loadedTowers) {};
+    MainMenuState(std::vector<Tower>& loadedTowers) : m_towers(loadedTowers) {};
     void Update(Game& game, float deltaTime) override;
     void Draw() const override;
 };

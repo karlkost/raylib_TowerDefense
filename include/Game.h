@@ -5,7 +5,7 @@
 #include <memory>
 
 class Game {
-    std::unique_ptr<GameState> currentState;
+    std::unique_ptr<GameState> m_currentState;
 
 public:
     void ChangeState(std::unique_ptr<GameState> newState);

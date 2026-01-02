@@ -7,7 +7,7 @@
 #include "raylib.h"
 
 class TowerManager {
-    std::vector<Tower> towers;
+    std::vector<Tower> m_towers;
 
 public:
     TowerManager() = default;

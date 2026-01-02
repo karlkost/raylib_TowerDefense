@@ -11,7 +11,7 @@ static constexpr float MAP_SIZE = 30.0f;
 
 void MainMenuState::Update(Game& game, const float deltaTime) {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        if (CheckCollisionPointRec(GetMousePosition(), playButton)) {
+        if (CheckCollisionPointRec(GetMousePosition(), m_playButton)) {
             //for debugging
             const std::vector<Vector2> waypoints = DebugMap::GetWaypoints();
 
@@ -30,13 +30,13 @@ void MainMenuState::Update(Game& game, const float deltaTime) {
                 mapHitboxes.push_back(enemyPath);
             }
 
-            game.ChangeState(std::make_unique<PlayingState>(towers, waypoints, mapHitboxes, WaveDatabase::waves));
+            game.ChangeState(std::make_unique<PlayingState>(m_towers, waypoints, mapHitboxes, WaveDatabase::waves));
         }
     }
 }
 
 void MainMenuState::Draw() const {
     DrawText("TOWER DEFENSE GAME", 300, 200, 30, BLACK);
-    DrawRectangleRec(playButton, BLACK);
+    DrawRectangleRec(m_playButton, BLACK);
     DrawText("PLAY", 350, 350, 30, WHITE);
 }

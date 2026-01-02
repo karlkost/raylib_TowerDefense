@@ -6,7 +6,7 @@ static constexpr Color invalidRangeColor = {255, 0, 0, 100};
 
 void TowerManager::Update(const float deltaTime, std::vector<Enemy>& enemies) {
     //attacking stuff
-    for (auto& tower : towers) {
+    for (auto& tower : m_towers) {
         tower.timeSinceAttack += deltaTime;
         if (tower.timeSinceAttack >= tower.attackDelay) {
             //pick a target to attack and attack it
@@ -41,13 +41,13 @@ void TowerManager::DrawTower(const Tower& tower) {
 
 void TowerManager::Draw() const {
     //draw selected circles first so it doesn't cover the tower sprites
-    for (const auto& tower : towers) {
+    for (const auto& tower : m_towers) {
         if (tower.selected) {
             DrawCircleV(tower.position, 15, SKYBLUE);
         }
     }
 
-    for (const auto& tower : towers) {
+    for (const auto& tower : m_towers) {
         DrawTower(tower);
     }
 }
@@ -63,11 +63,11 @@ void TowerManager::DisplayPlacement(const Tower& tower, const bool validPlacemen
 }
 
 void TowerManager::PlaceTower(const Tower& tower) {
-    towers.push_back(tower);
+    m_towers.push_back(tower);
 }
 
 void TowerManager::SelectTowers(const Rectangle& area) {
-    for (auto& tower : towers) {
+    for (auto& tower : m_towers) {
         if (CheckCollisionPointRec(tower.position, area)) {
             tower.selected = true;
         } else {
@@ -77,11 +77,11 @@ void TowerManager::SelectTowers(const Rectangle& area) {
 }
 
 void TowerManager::DeleteSelected() {
-    std::erase_if(towers, [](const Tower& t){ return t.selected; });
+    std::erase_if(m_towers, [](const Tower& t){ return t.selected; });
 }
 
 bool TowerManager::CheckTowerCollisions(const Rectangle& rect) {
-    for (const auto& tower : towers) {
+    for (const auto& tower : m_towers) {
         const Rectangle towerHitbox{tower.position.x - tower.animation.rect.width/2, tower.position.y - tower.animation.rect.height/2, tower.animation.rect.width, tower.animation.rect.height};
         if (CheckCollisionRecs(towerHitbox, rect)) {
             return false;

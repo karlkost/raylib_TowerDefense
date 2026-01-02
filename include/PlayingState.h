@@ -8,24 +8,24 @@
 #include <queue>
 
 class PlayingState : public GameState {
-     std::vector<Tower> selectedTowers; //towers user selected in main menu
-     std::queue<std::queue<EnemySpawn>> waves;
+     std::vector<Tower> m_selectedTowers; //towers user selected in main menu
+     std::queue<std::queue<EnemySpawn>> m_waves;
 
-     TowerManager towerManager; //manages towers (shooting, cooldowns, sprites)
-     std::queue<EnemySpawn> currentWave;
-     std::vector<Enemy> enemies; //list of enemies on screen
+     TowerManager m_towerManager; //manages towers (shooting, cooldowns, sprites)
+     std::queue<EnemySpawn> m_currentWave;
+     std::vector<Enemy> m_enemies; //list of enemies on screen
 
-     std::vector<Vector2> waypoints; //waypoints in the map which enemies go towards
-     std::vector<Rectangle> hitboxes; //hitboxes of the waypoints/map to track where towers cant be placed
+     std::vector<Vector2> m_waypoints; //waypoints in the map which enemies go towards
+     std::vector<Rectangle> m_hitboxes; //hitboxes of the waypoints/map to track where towers cant be placed
 
-     Tower equippedTower;
-     bool towerEquipped = false;
-     bool validTowerPlacement = true;
+     Tower m_equippedTower;
+     bool m_towerEquipped = false;
+     bool m_validTowerPlacement = true;
 
-     float startTimer = 0.0f;
+     float m_startTimer = 0.0f;
 
-     int waveNumber = 1;
-     float timeSinceLastSpawn = 0.0f;
+     int m_waveNumber = 1;
+     float m_timeSinceLastSpawn = 0.0f;
 
      void SpawnEnemies(float deltaTime);
      void SortEnemies();
