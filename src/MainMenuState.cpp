@@ -1,11 +1,11 @@
 #include "MainMenuState.h"
-
-#include <iostream>
-
 #include "Game.h"
 #include "PlayingState.h"
 #include "DebugMap.h"
 #include "WaveDatabase.h"
+
+#include <iostream>
+
 
 static constexpr float MAP_SIZE = 30.0f;
 

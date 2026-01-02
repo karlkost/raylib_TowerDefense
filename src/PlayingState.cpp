@@ -1,8 +1,6 @@
 #include "PlayingState.h"
-
 #include <algorithm>
 #include <ranges>
-#include <iostream>
 
 PlayingState::PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints,
                            const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& mapWaves)

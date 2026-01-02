@@ -18,25 +18,15 @@ FetchContent_MakeAvailable(raylib)
 
 file(COPY ${CMAKE_SOURCE_DIR}/textures DESTINATION ${CMAKE_BINARY_DIR})
 
-add_executable(raylib_TowerDefense main.cpp
-        TowerManager.h
-        TowerManager.cpp
-        Enemy.h
-        Game.h
-        Game.cpp
-        Animation.h
-        GameState.h
-        PlayingState.h
-        PlayingState.cpp
-        DebugMap.cpp
-        DebugMap.h
-        MainMenuState.h
-        Tower.h
-        MainMenuState.cpp
-        EnemyDatabase.h
-        EnemyDatabase.cpp
-        WaveDatabase.cpp
-        WaveDatabase.h
+add_executable(raylib_TowerDefense src/main.cpp
+        src/TowerManager.cpp
+        src/Game.cpp
+        src/PlayingState.cpp
+        src/DebugMap.cpp
+        src/MainMenuState.cpp
+        src/EnemyDatabase.cpp
+        src/WaveDatabase.cpp
 )
 
+target_include_directories(raylib_TowerDefense PRIVATE include)
 target_link_libraries(raylib_TowerDefense PRIVATE raylib)

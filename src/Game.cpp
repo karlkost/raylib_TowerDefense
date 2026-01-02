@@ -1,9 +1,8 @@
 #include "Game.h"
 #include "MainMenuState.h"
-#include "EnemyDatabase.h"
+#include "WaveDatabase.h"
 #include <vector>
 #include "raylib.h"
-#include "WaveDatabase.h"
 
 constexpr int screenWidth = 800;
 constexpr int screenHeight = 600;
