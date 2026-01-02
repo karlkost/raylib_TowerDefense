@@ -5,11 +5,12 @@
 #include <memory>
 
 class Game {
-    std::unique_ptr<GameState> m_currentState;
-
 public:
     void ChangeState(std::unique_ptr<GameState> newState);
     void run();
+
+private:
+    std::unique_ptr<GameState> m_currentState;
 };
 
 #endif //RAYLIB_TOWERDEFENSE_GAME_H

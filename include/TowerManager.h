@@ -7,8 +7,6 @@
 #include "raylib.h"
 
 class TowerManager {
-    std::vector<Tower> m_towers;
-
 public:
     TowerManager() = default;
     void Update(float deltaTime, std::vector<Enemy>& enemies);
@@ -19,6 +17,9 @@ public:
     void SelectTowers(const Rectangle& area);
     void DeleteSelected();
     bool CheckTowerCollisions(const Rectangle& rect);
+
+private:
+    std::vector<Tower> m_towers;
 };
 
 #endif //RAYLIB_TOWERDEFENSE_TOWERMANAGER_H
