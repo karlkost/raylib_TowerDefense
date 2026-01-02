@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.1.2)
+cmake_minimum_required(VERSION 3.11)
 project(raylib_TowerDefense)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -16,8 +16,6 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(raylib)
 
-file(COPY ${CMAKE_SOURCE_DIR}/textures DESTINATION ${CMAKE_BINARY_DIR})
-
 add_executable(raylib_TowerDefense src/main.cpp
         src/TowerManager.cpp
         src/Game.cpp
@@ -30,3 +28,9 @@ add_executable(raylib_TowerDefense src/main.cpp
 
 target_include_directories(raylib_TowerDefense PRIVATE include)
 target_link_libraries(raylib_TowerDefense PRIVATE raylib)
+
+# add texture folder to build
+add_custom_command(TARGET raylib_TowerDefense POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/textures $<TARGET_FILE_DIR:raylib_TowerDefense>/textures
+)
