@@ -63,49 +63,33 @@ void PlayingState::SpawnEnemies(const float deltaTime) {
 
         Enemy e = es.enemy;
         e.position = m_waypoints.front();
-        e.target = m_waypoints.front();
 
         m_enemies.push_back(e);
     }
 }
 
 void PlayingState::SortEnemies() {
-    std::vector<std::vector<Enemy>> enemiesByWaypoints{m_waypoints.size()};
-
-    //store enemies by waypoints
-    for (auto& e : m_enemies) {
-        enemiesByWaypoints.at(e.currentWaypoint).push_back(e);
-    }
-
-    //sort enemies in their waypoint groups by how close they are to their next waypoint
-    for (auto& group : enemiesByWaypoints) {
-        std::ranges::sort(group, [](const Enemy& a, const Enemy& b) {
-           return Vector2DistanceSqr(a.position, a.target) < Vector2DistanceSqr(b.position, b.target);
-        });
-    }
-
-    m_enemies.clear();
-    //add the enemies back into the list based on waypoint (descending)
-    for (auto& group : enemiesByWaypoints | std::views::reverse) {
-        m_enemies.insert(m_enemies.end(), group.begin(), group.end());
-    }
+    std::ranges::sort(m_enemies, [](const Enemy& a, const Enemy& b) {
+        return a.distanceAlongTrack > b.distanceAlongTrack;
+    });
 }
 
 void PlayingState::UpdateEnemies(const float deltaTime) {
     for (auto& enemy : m_enemies) {
         //if enemy has reached close to the waypoint, set target to the next waypoint
-        if (Vector2Equals(enemy.position, enemy.target)) {
+        const Vector2& enemyTarget = m_waypoints.at(enemy.currentWaypoint);
+        if (Vector2Equals(enemy.position, enemyTarget)) {
             enemy.currentWaypoint++;
 
             //check if there are more waypoints remaining
-            if (enemy.currentWaypoint < m_waypoints.size()) {
-                enemy.target = m_waypoints.at(enemy.currentWaypoint);
-            } else {
+            if (enemy.currentWaypoint >= m_waypoints.size()) {
                 //TODO: player loses health
             }
         } else {
             //move towards next waypoint
-            enemy.position = Vector2MoveTowards(enemy.position, enemy.target, enemy.speed * deltaTime);
+            const Vector2 nextPosition = Vector2MoveTowards(enemy.position, enemyTarget, enemy.speed * deltaTime);
+            enemy.position = nextPosition;
+            enemy.distanceAlongTrack += Vector2LengthSqr(nextPosition);
         }
     }
 
@@ -114,10 +98,13 @@ void PlayingState::UpdateEnemies(const float deltaTime) {
 
 void PlayingState::DrawEnemies() const {
     for (const auto& enemy : m_enemies) {
+        const auto enemySize = static_cast<float>(enemy.size);
+
         //rectangles draw from top left so we need to calculate the center and then use that as the position vector in RectangleV so it looks centered
-        const float center = enemy.size.x/2;
+        const float center = enemySize/2;
         const Vector2 drawPosition = {enemy.position.x - center, enemy.position.y - center};
-        DrawRectangleV(drawPosition, enemy.size, enemy.color);
+
+        DrawRectangleV(drawPosition, (Vector2){enemySize, enemySize}, enemy.color);
     }
 }
 
