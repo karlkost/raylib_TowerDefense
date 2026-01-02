@@ -8,6 +8,14 @@
 #include <queue>
 
 class PlayingState : public GameState {
+public:
+     PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints,
+          const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& mapWaves);
+
+     void Update(Game& game, float deltaTime) override;
+     void Draw() const override;
+
+private:
      std::vector<Tower> m_selectedTowers; //towers user selected in main menu
      std::queue<std::queue<EnemySpawn>> m_waves;
 
@@ -28,18 +36,12 @@ class PlayingState : public GameState {
      float m_timeSinceLastSpawn = 0.0f;
 
      void SpawnEnemies(float deltaTime);
-     void SortEnemies();
+     void SortEnemies(); //Sort enemies based on how far along the track they are (closest to exit is first)
      void UpdateEnemies(float deltaTime);
      void DrawEnemies() const;
      void HandleInput();
      void EquipTower(const Tower& tower);
      bool PlacementInBounds(const Tower &tower);
-public:
-     PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints,
-          const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& mapWaves);
-
-     void Update(Game& game, float deltaTime) override;
-     void Draw() const override;
 };
 
 #endif //RAYLIB_TOWERDEFENSE_PLAYINGSTATE_H
