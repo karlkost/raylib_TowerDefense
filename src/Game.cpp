@@ -21,6 +21,7 @@ void Game::run() {
 
     const Image cannonTowerImage = { RAYLIB_CANNON_DATA, RAYLIB_CANNON_WIDTH, RAYLIB_CANNON_HEIGHT, 1, RAYLIB_CANNON_FORMAT };
     Texture2D cannonTowerTexture = LoadTextureFromImage(cannonTowerImage);
+    UnloadImage(cannonTowerImage);
 
     textureList.push_back(cannonTowerTexture);
 
