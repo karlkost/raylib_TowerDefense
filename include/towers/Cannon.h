@@ -4,16 +4,16 @@
 #include "Tower.h"
 
 class Cannon : public Tower {
-public:
-    Cannon(const Texture2D &texture);
+   public:
+    Cannon(const Texture2D& texture);
     void Attack(Enemy& enemy) override;
     void Draw() const override;
     bool EnemyInRange(Vector2 enemyPosition) const override;
     std::unique_ptr<Tower> clone() const override;
 
-private:
+   private:
     Texture2D m_texture;
     const float m_rotationOffset = 90.0f;
 };
 
-#endif //RAYLIB_TOWERDEFENSE_CANNON_H
+#endif  // RAYLIB_TOWERDEFENSE_CANNON_H

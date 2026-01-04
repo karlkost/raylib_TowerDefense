@@ -1,11 +1,12 @@
 #include "TowerManager.h"
+
 #include "ParticleManager.h"
 
 static constexpr Color validRangeColor = {0, 255, 0, 100};
 static constexpr Color invalidRangeColor = {255, 0, 0, 100};
 
 void TowerManager::Update(const float deltaTime, std::vector<Enemy>& enemies) const {
-    //attacking stuff
+    // attacking stuff
     for (const auto& tower : m_towers) {
         tower->UpdateTimeSinceLastAttack(deltaTime);
 
@@ -25,9 +26,7 @@ void TowerManager::Draw() const {
     }
 }
 
-void TowerManager::PlaceTower(const std::shared_ptr<Tower>& tower) {
-    m_towers.push_back(tower->clone());
-}
+void TowerManager::PlaceTower(const std::shared_ptr<Tower>& tower) { m_towers.push_back(tower->clone()); }
 
 void TowerManager::DisplayPlacement(const std::shared_ptr<Tower>& tower, const bool validPlacement) {
     Vector2 position;

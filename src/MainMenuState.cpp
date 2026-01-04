@@ -1,21 +1,21 @@
 #include "MainMenuState.h"
-#include "Game.h"
-#include "PlayingState.h"
-#include "DebugMap.h"
-#include "WaveDatabase.h"
 
 #include <iostream>
 
+#include "DebugMap.h"
+#include "Game.h"
+#include "PlayingState.h"
+#include "WaveDatabase.h"
 
 static constexpr float PATH_SIZE = 30.0f;
 
 void MainMenuState::Update(Game& game, const float deltaTime) {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         if (CheckCollisionPointRec(GetMousePosition(), m_playButton)) {
-            //for debugging
+            // for debugging
             const std::vector<Vector2> waypoints = DebugMap::GetWaypoints();
 
-            //create rect hitboxes so towers don't interfere with waypoints
+            // create rect hitboxes so towers don't interfere with waypoints
             std::vector<Rectangle> mapHitboxes;
             for (int i = 0; i < waypoints.size() - 1; i++) {
                 const Vector2 waypoint1 = waypoints.at(i);
@@ -23,10 +23,10 @@ void MainMenuState::Update(Game& game, const float deltaTime) {
 
                 float x = std::min(waypoint1.x, waypoint2.x) - PATH_SIZE / 2;
                 float y = std::min(waypoint1.y, waypoint2.y) - PATH_SIZE / 2;
-                float width  = std::abs(waypoint2.x - waypoint1.x) + PATH_SIZE;
+                float width = std::abs(waypoint2.x - waypoint1.x) + PATH_SIZE;
                 float height = std::abs(waypoint2.y - waypoint1.y) + PATH_SIZE;
 
-                Rectangle enemyPath = { x, y, width, height };
+                Rectangle enemyPath = {x, y, width, height};
                 mapHitboxes.push_back(enemyPath);
             }
 

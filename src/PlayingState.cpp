@@ -1,29 +1,31 @@
 #include "PlayingState.h"
-#include "ParticleManager.h"
-#include "DrawCenteredRectangle.h"
+
 #include <algorithm>
 #include <ranges>
+
+#include "DrawCenteredRectangle.h"
+#include "ParticleManager.h"
 #include "raymath.h"
 
-PlayingState::PlayingState(const std::vector<std::shared_ptr<Tower>>& selectedTowers, const std::vector<Vector2>& mapWaypoints,
-                           const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& waves)
-: m_selectedTowers(selectedTowers), m_waves(waves), m_waypoints(mapWaypoints), m_hitboxes(mapHitboxes)
-{}
+PlayingState::PlayingState(const std::vector<std::shared_ptr<Tower>>& selectedTowers,
+                           const std::vector<Vector2>& mapWaypoints, const std::vector<Rectangle>& mapHitboxes,
+                           const std::queue<std::queue<EnemySpawn>>& waves)
+    : m_selectedTowers(selectedTowers), m_waves(waves), m_waypoints(mapWaypoints), m_hitboxes(mapHitboxes) {}
 
 void PlayingState::Update(Game&, const float deltaTime) {
-    //wait 10 seconds to give the player time to prepare
+    // wait 10 seconds to give the player time to prepare
     if (m_startTimer >= 1.0f) {
         if (!m_waves.empty() && m_currentWave.empty() && m_enemies.empty()) {
             m_currentWave = m_waves.front();
             m_waves.pop();
         }
 
-        //check if current wave still has enemies
+        // check if current wave still has enemies
         if (!m_currentWave.empty()) {
-            //spawn an enemy if it has more
+            // spawn an enemy if it has more
             SpawnEnemies(deltaTime);
         } else if (m_waves.empty()) {
-            //game is won
+            // game is won
         }
 
     } else {
@@ -37,7 +39,7 @@ void PlayingState::Update(Game&, const float deltaTime) {
     ParticleManager::GetInstance().Update(deltaTime);
     if (m_equippedTower) {
         m_equippedTower->SetPosition(GetMousePosition());
-        m_validTowerPlacement = true;//PlacementInBounds(m_equippedTower);
+        m_validTowerPlacement = true;  // PlacementInBounds(m_equippedTower);
     }
 }
 
@@ -47,7 +49,7 @@ void PlayingState::Draw() const {
     // }
 
     for (const auto& rect : m_hitboxes) {
-        DrawRectangleRec(rect, Color{5,50,100,255});
+        DrawRectangleRec(rect, Color{5, 50, 100, 255});
     }
 
     DrawEnemies();
@@ -74,31 +76,31 @@ void PlayingState::SpawnEnemies(const float deltaTime) {
 }
 
 void PlayingState::SortEnemies() {
-    std::ranges::sort(m_enemies, [](const Enemy& a, const Enemy& b) {
-        return a.distanceAlongPath > b.distanceAlongPath;
-    });
+    std::ranges::sort(m_enemies,
+                      [](const Enemy& a, const Enemy& b) { return a.distanceAlongPath > b.distanceAlongPath; });
 }
 
 void PlayingState::UpdateEnemies(const float deltaTime) {
     for (auto& enemy : m_enemies) {
-        //if enemy has reached close to the waypoint, set target to the next waypoint
+        // if enemy has reached close to the waypoint, set target to the next waypoint
         const Vector2& enemyTarget = m_waypoints.at(enemy.currentWaypoint);
         if (Vector2Equals(enemy.position, enemyTarget)) {
             enemy.currentWaypoint++;
 
-            //check if there are more waypoints remaining
+            // check if there are more waypoints remaining
             if (enemy.currentWaypoint >= m_waypoints.size()) {
-                //TODO: player loses health
+                // TODO: player loses health
             }
         } else {
-            //move towards next waypoint
+            // move towards next waypoint
             const Vector2 nextPosition = Vector2MoveTowards(enemy.position, enemyTarget, enemy.speed * deltaTime);
             enemy.position = nextPosition;
             enemy.distanceAlongPath += Vector2LengthSqr(nextPosition);
         }
     }
 
-    std::erase_if(m_enemies, [this](const Enemy& e){ return e.currentWaypoint >= m_waypoints.size() || e.health <= 0; });
+    std::erase_if(m_enemies,
+                  [this](const Enemy& e) { return e.currentWaypoint >= m_waypoints.size() || e.health <= 0; });
 }
 
 void PlayingState::DrawEnemies() const {

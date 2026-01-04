@@ -1,4 +1,5 @@
 #include "WaveDatabase.h"
+
 #include "EnemyDatabase.h"
 
 std::queue<std::queue<EnemySpawn>> WaveDatabase::waves;
@@ -37,7 +38,7 @@ void WaveDatabase::LoadWaves() {
     for (int i = 0; i < 5; i++) {
         wave5.push(EnemySpawn{edb.slow, 0.75f});
     }
-    //add a larger delay so the slow & higher health enemies go down the track a bit more
+    // add a larger delay so the slow & higher health enemies go down the track a bit more
     wave5.push(EnemySpawn{edb.fast, 5.0f});
     for (int i = 0; i < 9; i++) {
         wave5.push(EnemySpawn{edb.fast, 0.2f});

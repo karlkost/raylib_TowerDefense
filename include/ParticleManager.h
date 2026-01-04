@@ -1,8 +1,9 @@
 #ifndef RAYLIB_TOWERDEFENSE_PARTICLEMANAGER_H
 #define RAYLIB_TOWERDEFENSE_PARTICLEMANAGER_H
 
-#include "Enemy.h"
 #include <vector>
+
+#include "Enemy.h"
 #include "raylib.h"
 
 struct Particle {
@@ -14,10 +15,10 @@ struct Particle {
     int size;
 };
 
-//used for small particles, currently only for when an enemy is hit by an attack
+// used for small particles, currently only for when an enemy is hit by an attack
 class ParticleManager {
-public:
-    //singleton setup
+   public:
+    // singleton setup
     static ParticleManager& GetInstance() {
         static ParticleManager instance;
         return instance;
@@ -29,9 +30,9 @@ public:
     void Draw() const;
     void SpawnEnemyHitParticles(const Enemy& enemy, Vector2 contactPosition);
 
-private:
+   private:
     ParticleManager() = default;
     std::vector<Particle> m_particles{};
 };
 
-#endif //RAYLIB_TOWERDEFENSE_PARTICLEMANAGER_H
+#endif  // RAYLIB_TOWERDEFENSE_PARTICLEMANAGER_H
