@@ -1,92 +1,39 @@
 #include "TowerManager.h"
-#include "raymath.h"
+#include "ParticleManager.h"
 
 static constexpr Color validRangeColor = {0, 255, 0, 100};
 static constexpr Color invalidRangeColor = {255, 0, 0, 100};
 
-void TowerManager::Update(const float deltaTime, std::vector<Enemy>& enemies) {
+void TowerManager::Update(const float deltaTime, std::vector<Enemy>& enemies) const {
     //attacking stuff
-    for (auto& tower : m_towers) {
-        tower.timeSinceAttack += deltaTime;
-        if (tower.timeSinceAttack >= tower.attackDelay) {
-            //pick a target to attack and attack it
-            for (auto& enemy : enemies) {
-                //finds the FIRST valid target within range
-                //could change to checking collision with circle & rec if enemies will only be rectangles
-                const float distanceToEnemy = Vector2Distance(tower.position, enemy.position);
-                //check for enemy health incase the update loop hasn't removed the enemy (so two towers don't attack the same target)
-                if (distanceToEnemy <= tower.range && enemy.health > 0) {
-                    //rotate towards the enemy
-                    const Vector2 dir = Vector2Subtract(enemy.position, tower.position);
-                    tower.rotation = atan2f(dir.y, dir.x) * RAD2DEG - 90;
+    for (const auto& tower : m_towers) {
+        tower->UpdateTimeSinceLastAttack(deltaTime);
 
-                    enemy.health -= tower.damage;
-                    tower.timeSinceAttack = 0.0f;
+        if (!tower->CanAttack()) continue;
 
-                    tower.animation.currentFrame++;
-                    break;
-                }
+        for (auto& enemy : enemies) {
+            if (tower->EnemyInRange(enemy.position)) {
+                tower->Attack(enemy);
             }
         }
     }
 }
 
-void TowerManager::DrawTower(const Tower& tower) {
-    const Rectangle& src = tower.animation.rect;
-    const Rectangle dest = {tower.position.x, tower.position.y, src.width, src.height};
-    const Vector2 origin = {src.width * 0.5f, src.height * 0.5f};
-
-    DrawTexturePro(tower.animation.texture, src, dest, origin, tower.rotation, WHITE);
-}
-
 void TowerManager::Draw() const {
-    //draw selected circles first so it doesn't cover the tower sprites
     for (const auto& tower : m_towers) {
-        if (tower.selected) {
-            DrawCircleV(tower.position, 15, SKYBLUE);
-        }
-    }
-
-    for (const auto& tower : m_towers) {
-        DrawTower(tower);
+        tower->Draw();
     }
 }
 
-void TowerManager::DisplayPlacement(const Tower& tower, const bool validPlacement) {
-    if (validPlacement) {
-        DrawCircleV(tower.position, tower.range, validRangeColor);
-    } else {
-        DrawCircleV(tower.position, tower.range, invalidRangeColor);
-    }
-
-    DrawTower(tower);
+void TowerManager::PlaceTower(const std::shared_ptr<Tower>& tower) {
+    m_towers.push_back(tower->clone());
 }
 
-void TowerManager::PlaceTower(const Tower& tower) {
-    m_towers.push_back(tower);
-}
+void TowerManager::DisplayPlacement(const std::shared_ptr<Tower>& tower, const bool validPlacement) {
+    Vector2 position;
+    float range;
 
-void TowerManager::SelectTowers(const Rectangle& area) {
-    for (auto& tower : m_towers) {
-        if (CheckCollisionPointRec(tower.position, area)) {
-            tower.selected = true;
-        } else {
-            tower.selected = false;
-        }
-    }
-}
-
-void TowerManager::DeleteSelected() {
-    std::erase_if(m_towers, [](const Tower& t){ return t.selected; });
-}
-
-bool TowerManager::CheckTowerCollisions(const Rectangle& rect) {
-    for (const auto& tower : m_towers) {
-        const Rectangle towerHitbox{tower.position.x - tower.animation.rect.width/2, tower.position.y - tower.animation.rect.height/2, tower.animation.rect.width, tower.animation.rect.height};
-        if (CheckCollisionRecs(towerHitbox, rect)) {
-            return false;
-        }
-    }
-
-    return true;
+    tower->GetPlacementInformation(position, range);
+    DrawCircleV(position, range, validPlacement ? validRangeColor : invalidRangeColor);
+    tower->Draw();
 }

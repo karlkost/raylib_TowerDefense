@@ -9,14 +9,14 @@
 
 class PlayingState : public GameState {
 public:
-     PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints,
-          const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& mapWaves);
+     PlayingState(const std::vector<std::shared_ptr<Tower>>& selectedTowers, const std::vector<Vector2>& mapWaypoints,
+          const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& waves);
 
      void Update(Game& game, float deltaTime) override;
      void Draw() const override;
 
 private:
-     std::vector<Tower> m_selectedTowers; //towers user selected in main menu
+     std::vector<std::shared_ptr<Tower>> m_selectedTowers; //towers user selected in main menu
      std::queue<std::queue<EnemySpawn>> m_waves;
 
      TowerManager m_towerManager; //manages towers (shooting, cooldowns, sprites)
@@ -26,8 +26,7 @@ private:
      std::vector<Vector2> m_waypoints; //waypoints in the map which enemies go towards
      std::vector<Rectangle> m_hitboxes; //hitboxes of the waypoints/map to track where towers cant be placed
 
-     Tower m_equippedTower;
-     bool m_towerEquipped = false;
+     std::shared_ptr<Tower> m_equippedTower; //tower to display placement for
      bool m_validTowerPlacement = true;
 
      float m_startTimer = 0.0f;
@@ -40,8 +39,8 @@ private:
      void UpdateEnemies(float deltaTime);
      void DrawEnemies() const;
      void HandleInput();
-     void EquipTower(const Tower& tower);
-     bool PlacementInBounds(const Tower &tower);
+     void EquipTower(const std::shared_ptr<Tower> &tower);
+     bool PlacementInBounds(const std::unique_ptr<Tower>& tower) const;
 };
 
 #endif //RAYLIB_TOWERDEFENSE_PLAYINGSTATE_H

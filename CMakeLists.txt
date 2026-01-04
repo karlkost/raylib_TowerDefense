@@ -24,6 +24,11 @@ add_executable(raylib_TowerDefense src/main.cpp
         src/MainMenuState.cpp
         src/EnemyDatabase.cpp
         src/WaveDatabase.cpp
+        include/ParticleManager.h
+        src/ParticleManager.cpp
+        include/DrawCenteredRectangle.h
+        include/towers/Cannon.h
+        src/towers/Cannon.cpp
 )
 
 target_include_directories(raylib_TowerDefense PRIVATE include)

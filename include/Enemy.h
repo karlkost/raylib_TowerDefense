@@ -10,7 +10,7 @@ struct Enemy {
     int size; //size of the square (indicator of health but capped)
     int health; //remaining hit points
 
-    float distanceAlongTrack = 0.0f; //how far the enemy has moved in total
+    float distanceAlongPath = 0.0f; //how far the enemy has moved in total
     int currentWaypoint = 0; //waypoint which the enemy has reached
 
     Enemy(const Vector2 enemyPosition, const Color enemyColor, const float enemySpeed, const int enemySize, const int enemyHealth) :

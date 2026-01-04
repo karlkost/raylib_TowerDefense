@@ -7,7 +7,7 @@
 #include <iostream>
 
 
-static constexpr float MAP_SIZE = 30.0f;
+static constexpr float PATH_SIZE = 30.0f;
 
 void MainMenuState::Update(Game& game, const float deltaTime) {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -21,10 +21,10 @@ void MainMenuState::Update(Game& game, const float deltaTime) {
                 const Vector2 waypoint1 = waypoints.at(i);
                 const Vector2 waypoint2 = waypoints.at(i + 1);
 
-                float x = std::min(waypoint1.x, waypoint2.x) - MAP_SIZE / 2;
-                float y = std::min(waypoint1.y, waypoint2.y) - MAP_SIZE / 2;
-                float width  = std::abs(waypoint2.x - waypoint1.x) + MAP_SIZE;
-                float height = std::abs(waypoint2.y - waypoint1.y) + MAP_SIZE;
+                float x = std::min(waypoint1.x, waypoint2.x) - PATH_SIZE / 2;
+                float y = std::min(waypoint1.y, waypoint2.y) - PATH_SIZE / 2;
+                float width  = std::abs(waypoint2.x - waypoint1.x) + PATH_SIZE;
+                float height = std::abs(waypoint2.y - waypoint1.y) + PATH_SIZE;
 
                 Rectangle enemyPath = { x, y, width, height };
                 mapHitboxes.push_back(enemyPath);

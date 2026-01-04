@@ -1,10 +1,13 @@
 #include "PlayingState.h"
+#include "ParticleManager.h"
+#include "DrawCenteredRectangle.h"
 #include <algorithm>
 #include <ranges>
+#include "raymath.h"
 
-PlayingState::PlayingState(const std::vector<Tower>& towers, const std::vector<Vector2>& mapWaypoints,
-                           const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& mapWaves)
-: m_selectedTowers(towers), m_waypoints(mapWaypoints), m_hitboxes(mapHitboxes), m_equippedTower(m_selectedTowers.at(0)), m_waves(mapWaves)
+PlayingState::PlayingState(const std::vector<std::shared_ptr<Tower>>& selectedTowers, const std::vector<Vector2>& mapWaypoints,
+                           const std::vector<Rectangle>& mapHitboxes, const std::queue<std::queue<EnemySpawn>>& waves)
+: m_selectedTowers(selectedTowers), m_waves(waves), m_waypoints(mapWaypoints), m_hitboxes(mapHitboxes)
 {}
 
 void PlayingState::Update(Game&, const float deltaTime) {
@@ -31,16 +34,17 @@ void PlayingState::Update(Game&, const float deltaTime) {
     UpdateEnemies(deltaTime);
     SortEnemies();
     m_towerManager.Update(deltaTime, m_enemies);
-    if (m_towerEquipped) {
-        m_equippedTower.position = GetMousePosition();
-        m_validTowerPlacement = PlacementInBounds(m_equippedTower);
+    ParticleManager::GetInstance().Update(deltaTime);
+    if (m_equippedTower) {
+        m_equippedTower->SetPosition(GetMousePosition());
+        m_validTowerPlacement = true;//PlacementInBounds(m_equippedTower);
     }
 }
 
 void PlayingState::Draw() const {
-    for (const auto& point : m_waypoints) {
-        DrawCircleV(point, 3, GREEN);
-    }
+    // for (const auto& point : m_waypoints) {
+    //     DrawCircleV(point, 3, GREEN);
+    // }
 
     for (const auto& rect : m_hitboxes) {
         DrawRectangleRec(rect, Color{5,50,100,255});
@@ -48,7 +52,8 @@ void PlayingState::Draw() const {
 
     DrawEnemies();
     m_towerManager.Draw();
-    if (m_towerEquipped) {
+    ParticleManager::GetInstance().Draw();
+    if (m_equippedTower) {
         TowerManager::DisplayPlacement(m_equippedTower, m_validTowerPlacement);
     }
 }
@@ -70,7 +75,7 @@ void PlayingState::SpawnEnemies(const float deltaTime) {
 
 void PlayingState::SortEnemies() {
     std::ranges::sort(m_enemies, [](const Enemy& a, const Enemy& b) {
-        return a.distanceAlongTrack > b.distanceAlongTrack;
+        return a.distanceAlongPath > b.distanceAlongPath;
     });
 }
 
@@ -89,7 +94,7 @@ void PlayingState::UpdateEnemies(const float deltaTime) {
             //move towards next waypoint
             const Vector2 nextPosition = Vector2MoveTowards(enemy.position, enemyTarget, enemy.speed * deltaTime);
             enemy.position = nextPosition;
-            enemy.distanceAlongTrack += Vector2LengthSqr(nextPosition);
+            enemy.distanceAlongPath += Vector2LengthSqr(nextPosition);
         }
     }
 
@@ -98,13 +103,7 @@ void PlayingState::UpdateEnemies(const float deltaTime) {
 
 void PlayingState::DrawEnemies() const {
     for (const auto& enemy : m_enemies) {
-        const auto enemySize = static_cast<float>(enemy.size);
-
-        //rectangles draw from top left so we need to calculate the center and then use that as the position vector in RectangleV so it looks centered
-        const float center = enemySize/2;
-        const Vector2 drawPosition = {enemy.position.x - center, enemy.position.y - center};
-
-        DrawRectangleV(drawPosition, (Vector2){enemySize, enemySize}, enemy.color);
+        DrawCenteredRectangle(enemy);
     }
 }
 
@@ -113,34 +112,32 @@ void PlayingState::HandleInput() {
         EquipTower(m_selectedTowers.at(0));
     }
 
-    if (m_towerEquipped && m_validTowerPlacement && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        m_equippedTower.position = GetMousePosition();
+    if (m_equippedTower && m_validTowerPlacement && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        m_equippedTower->SetPosition(GetMousePosition());
         m_towerManager.PlaceTower(m_equippedTower);
     }
 }
 
-void PlayingState::EquipTower(const Tower& tower) {
-    m_equippedTower = tower;
-    m_towerEquipped = !m_towerEquipped;
-
-    if (m_towerEquipped) {
-        HideCursor();
-    } else {
+void PlayingState::EquipTower(const std::shared_ptr<Tower>& tower) {
+    if (m_equippedTower) {
+        m_equippedTower = nullptr;
         ShowCursor();
+    } else {
+        m_equippedTower = tower;
+        HideCursor();
     }
 }
 
-bool PlayingState::PlacementInBounds(const Tower& tower) {
-    const Rectangle towerHitbox = {tower.position.x - tower.animation.rect.width/2, tower.position.y - tower.animation.rect.height/2,
-        tower.animation.rect.width, tower.animation.rect.height};
-
-    //check path hitboxes
-    for (const auto& rect : m_hitboxes) {
-        if (CheckCollisionRecs(rect, towerHitbox)) {
-            return false;
-        }
-    }
-
-    //check placed tower hitboxes
-    return m_towerManager.CheckTowerCollisions(towerHitbox);
-}
+// bool PlayingState::PlacementInBounds(const Tower& tower) const {
+//     const auto towerHitbox = tower.getHitbox();
+//
+//     //check path hitboxes
+//     for (const auto& rect : m_hitboxes) {
+//         if (CheckCollisionCircleRec(rect, towerHitbox)) {
+//             return false;
+//         }
+//     }
+//
+//     //check placed tower hitboxes
+//     return m_towerManager.CheckTowerCollisions(towerHitbox);
+// }

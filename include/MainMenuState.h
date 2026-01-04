@@ -4,17 +4,18 @@
 #include "GameState.h"
 #include "Tower.h"
 #include <vector>
+#include <memory>
 
 class MainMenuState : public GameState {
 public:
-    MainMenuState(std::vector<Tower>& loadedTowers) : m_towers(loadedTowers) {};
+    MainMenuState(std::vector<std::shared_ptr<Tower>>& loadedTowers) : m_towers(loadedTowers) {};
     void Update(Game& game, float deltaTime) override;
     void Draw() const override;
 
 private:
-    std::vector<Tower>& m_towers; //towers in game that the player can select
+    std::vector<std::shared_ptr<Tower>>& m_towers; //towers in game that the player can select
+    std::vector<std::shared_ptr<Tower>> m_selectedTowers; //selected towers to be used in game
 
-    std::vector<Tower> m_selectedTowers; //selected towers to be used in game
     Rectangle m_playButton{300, 300, 200, 100};
     Rectangle m_selectTowersButton{300, 500, 200, 100};
 };

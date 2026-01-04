@@ -1,26 +1,34 @@
 #ifndef RAYLIB_TOWERDEFENSE_TOWER_H
 #define RAYLIB_TOWERDEFENSE_TOWER_H
 
-#include "Animation.h"
-#include "raymath.h"
+#include "Enemy.h"
+#include <memory>
 
-struct Tower {
-    //initialized params
-    Animation animation; //used for sprite texture & animation
-    float range; //how far it can attack
-    float attackDelay; //how long to wait before each attack
-    int damage;
+class Tower {
+public:
+    Tower() = default;
+    virtual ~Tower() = default;
 
-    //default params
-    Vector2 position;
-    float timeSinceAttack; //seconds since last attack
-    float rotation;
-    bool selected; //selected for deletion
+    virtual void Attack(Enemy& enemy) = 0;
+    virtual void Draw() const = 0;
+    virtual bool EnemyInRange(Vector2 enemyPosition) const = 0;
+    virtual std::unique_ptr<Tower> clone() const = 0;
 
-    Tower(const Animation &anim, const float r, const float atkDelay, const int dmg) :
-    animation(anim), range(r), attackDelay(atkDelay), damage(dmg),
-    position(Vector2Zero()), timeSinceAttack(0.0f), rotation(0.0f), selected(false)
-    {}
+    void UpdateTimeSinceLastAttack(const float deltaTime) { m_timeSinceLastAttack += deltaTime; }
+    bool CanAttack() const { return m_timeSinceLastAttack >= (1.0f / m_attackSpeed); }
+    void SetPosition(const Vector2 newPosition) { m_position = newPosition; }
+    void GetPlacementInformation(Vector2& pos, float& rng) const { pos = m_position; rng = m_range; }
+protected:
+    Vector2 m_position = Vector2(0, 0);
+    //base tower stats
+    float m_range = 0.0f; //how far the tower can attack (radius of circle)
+    float m_attackSpeed = 0.0f; //how many attacks the tower does per second
+    int m_damage = 0; //how much damage the tower does to an enemy with an attack
+
+    float m_rotation = 0.0f;
+    float m_timeSinceLastAttack = 0.0f;
+    int m_level = 1;
+
 };
 
 #endif //RAYLIB_TOWERDEFENSE_TOWER_H
