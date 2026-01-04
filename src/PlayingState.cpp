@@ -82,7 +82,8 @@ void PlayingState::SortEnemies() {
 
 void PlayingState::UpdateEnemies(const float deltaTime) {
     for (auto& enemy : m_enemies) {
-        // if enemy has reached close to the waypoint, set target to the next waypoint
+        //  if enemy has reached close to the waypoint, set target to the next
+        // waypoint
         const Vector2& enemyTarget = m_waypoints.at(enemy.currentWaypoint);
         if (Vector2Equals(enemy.position, enemyTarget)) {
             enemy.currentWaypoint++;

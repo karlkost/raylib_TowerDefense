@@ -21,7 +21,7 @@ void DrawCenteredRectangle(const T& entity) {
     const float center = size / 2;
     const Vector2 drawPosition = {entity.position.x - center, entity.position.y - center};
 
-    DrawRectangleV(drawPosition, (Vector2){size, size}, entity.color);
+    DrawRectangleV(drawPosition, Vector2 {size, size}, entity.color);
 }
 
 #endif  // RAYLIB_TOWERDEFENSE_DRAWCENTEREDRECTANGLE_H

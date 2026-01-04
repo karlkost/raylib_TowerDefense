@@ -6,6 +6,7 @@
 #include "WaveDatabase.h"
 #include "raylib.h"
 #include "towers/Cannon.h"
+#include "textures/raylib_cannon.h"
 
 constexpr int screenWidth = 800;
 constexpr int screenHeight = 600;
@@ -17,8 +18,9 @@ void Game::run() {
     // Camera2D camera{Vector2Zero(), Vector2Zero(), 0.0f, 1.0f};
 
     std::vector<Texture2D> textureList;
-    // load all textures
-    const Texture2D cannonTowerTexture = LoadTexture("textures/raylib_cannon.png");
+
+    const Image cannonTowerImage = { RAYLIB_CANNON_DATA, RAYLIB_CANNON_WIDTH, RAYLIB_CANNON_HEIGHT, 1, RAYLIB_CANNON_FORMAT };
+    Texture2D cannonTowerTexture = LoadTextureFromImage(cannonTowerImage);
 
     // const Texture2D cannonBallTexture = LoadTexture("textures/raylib_cannon_ball.png");
     // const Animation cannonBallAnimator{cannonBallTexture, 4, 8};
