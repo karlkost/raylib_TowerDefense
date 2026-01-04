@@ -10,6 +10,8 @@ Cannon::Cannon(const Texture2D& texture) : m_texture(texture) {
 }
 
 void Cannon::Attack(Enemy& enemy) {
+    m_timeSinceLastAttack = 0.0f; // reset timer
+
     const Vector2 dir = Vector2Subtract(enemy.position, m_position);
     m_rotation = atan2f(dir.y, dir.x) * RAD2DEG - m_rotationOffset;
 
@@ -19,9 +21,11 @@ void Cannon::Attack(Enemy& enemy) {
 
 void Cannon::Draw() const {
     // TODO: fix
-    const Vector2 centerPos = Vector2(m_position.x - m_texture.height * 0.5f, m_position.y - m_texture.width * 0.5f);
+    Rectangle src = {0, 0, static_cast<float>(m_texture.width), static_cast<float>(m_texture.height)};
+    Rectangle dst = {m_position.x, m_position.y, static_cast<float>(m_texture.width), static_cast<float>(m_texture.height)};
+    Vector2 origin = {dst.width / 2, dst.height / 2};
 
-    DrawTextureEx(m_texture, centerPos, m_rotation, 1.0f, WHITE);
+    DrawTexturePro(m_texture, src, dst, origin, m_rotation, WHITE);
 }
 
 bool Cannon::EnemyInRange(const Vector2 enemyPosition) const {

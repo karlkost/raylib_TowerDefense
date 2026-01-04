@@ -13,8 +13,9 @@ void TowerManager::Update(const float deltaTime, std::vector<Enemy>& enemies) co
         if (!tower->CanAttack()) continue;
 
         for (auto& enemy : enemies) {
-            if (tower->EnemyInRange(enemy.position)) {
+            if (tower->EnemyInRange(enemy.position) && enemy.health >= 0) {
                 tower->Attack(enemy);
+                break;
             }
         }
     }
