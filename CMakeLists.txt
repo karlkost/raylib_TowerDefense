@@ -42,8 +42,8 @@ add_custom_command(TARGET raylib_TowerDefense POST_BUILD
 add_executable(TexturesToCode src/scripts/TexturesToCode.cpp)
 target_link_libraries(TexturesToCode PRIVATE raylib)
 
-set(GENERATED_TEXTURES_DIR ${CMAKE_BINARY_DIR}/generated_textures)
-set(GENERATED_STAMP ${GENERATED_TEXTURES_DIR}/.generated)
+set(GENERATED_TEXTURES_DIR ${CMAKE_BINARY_DIR}/generated_textures/textures)
+set(GENERATED_STAMP ${CMAKE_BINARY_DIR}/generated_textures/.generated)
 
 add_custom_command(
     OUTPUT ${GENERATED_STAMP}
@@ -59,4 +59,4 @@ add_custom_target(generate_textures DEPENDS ${GENERATED_STAMP})
 
 add_dependencies(raylib_TowerDefense generate_textures)
 
-target_include_directories(raylib_TowerDefense PRIVATE ${GENERATED_TEXTURES_DIR})
+target_include_directories(raylib_TowerDefense PRIVATE ${CMAKE_BINARY_DIR}/generated_textures)
