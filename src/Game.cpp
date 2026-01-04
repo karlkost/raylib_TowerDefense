@@ -26,7 +26,7 @@ void Game::run() {
     textureList.push_back(cannonTowerTexture);
 
     std::vector<std::shared_ptr<Tower>> loadedTowers;
-    loadedTowers.push_back(std::make_unique<Cannon>(cannonTowerTexture));
+    loadedTowers.push_back(std::make_shared<Cannon>(cannonTowerTexture));
 
     WaveDatabase::LoadWaves();
 
