@@ -1,7 +1,15 @@
+#include "raylib.h"
+#include "Engine.h"
 #include "Game.h"
 
 int main() {
-    Game game;
-    game.run();
-    return 0;
+	Engine::Init();
+	Game::Init();
+
+	while (!WindowShouldClose()) {
+		Engine::UpdateGlobals();
+		
+		Game::Update();
+		Game::Draw();
+	}
 }

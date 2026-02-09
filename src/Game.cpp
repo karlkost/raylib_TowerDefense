@@ -1,54 +1,64 @@
 #include "Game.h"
 
+#include "CameraController.h"
+#include "EnemyManager.h"
+#include "TowerManager.h"
 #include <vector>
-
-#include "MainMenuState.h"
-#include "WaveDatabase.h"
+#include <string>
+#include <iostream>
 #include "raylib.h"
-#include "towers/Cannon.h"
-#include "textures/raylib_cannon.h"
 
-constexpr int screenWidth = 800;
-constexpr int screenHeight = 600;
+namespace Game {
+	CameraController g_playerCameraController{};
+	State g_gameState;
+	EnemyManager g_enemyManager{ Vector2{0, 0} };
+	TowerManager g_towerManager{};
 
-void Game::run() {
-    InitWindow(screenWidth, screenHeight, "");
-    SetTargetFPS(60);
+	void Update() {
+		if (g_gameState == State::PAUSED) {
+			return;
+		}
+		const float deltaTime = Engine::GetDeltaTime();
+		g_playerCameraController.Update(deltaTime, Engine::GetScreenCenteredVector());
 
-    // Camera2D camera{Vector2Zero(), Vector2Zero(), 0.0f, 1.0f};
+		Engine::UpdateMousePosition(g_playerCameraController.getCamera().target);
 
-    std::vector<Texture2D> textureList;
+		g_towerManager.Update(deltaTime, g_enemyManager.GetEnemies());
+		g_enemyManager.Update(deltaTime);
+	}
 
-    const Image cannonTowerImage = { RAYLIB_CANNON_DATA, RAYLIB_CANNON_WIDTH, RAYLIB_CANNON_HEIGHT, 1, RAYLIB_CANNON_FORMAT };
-    Texture2D cannonTowerTexture = LoadTextureFromImage(cannonTowerImage);
-    UnloadImage(cannonTowerImage);
+	void Draw() {
+		BeginDrawing();
+		ClearBackground(GRAY);
 
-    textureList.push_back(cannonTowerTexture);
+		BeginMode2D(g_playerCameraController.getCamera());
 
-    std::vector<std::shared_ptr<Tower>> loadedTowers;
-    loadedTowers.push_back(std::make_shared<Cannon>(cannonTowerTexture));
+		// Draw the World & Game Elements
+		g_towerManager.Draw();
+		g_enemyManager.Draw();
+		DrawCircleV(Vector2{ 0, 0 }, 10, PURPLE);
+		EndMode2D();
 
-    WaveDatabase::LoadWaves();
+		// temp stuff delete later
+		int fps = GetFPS();
+		std::string s = "FPS: " + std::to_string(fps);
+		DrawText(s.c_str(), 10, 10, 20, BLACK);
+		// end of temp stuff
 
-    this->ChangeState(std::make_unique<MainMenuState>(loadedTowers));
 
-    while (!WindowShouldClose()) {
-        const float deltaTime = GetFrameTime();
+		// Draw UI
+		//UI::Draw();
+		EndDrawing();
+	}
 
-        m_currentState->Update(*this, deltaTime);
-
-        BeginDrawing();
-        ClearBackground(GRAY);
-        m_currentState->Draw();
-
-        EndDrawing();
-    }
-
-    for (const auto& t : textureList) {
-        UnloadTexture(t);
-    }
-
-    CloseWindow();
+	// TODO: move to enemy or something related once I figure out how I want them to spawn
+	//void SpawnEnemy() {
+	//	// calculate starting position
+	//	int angle = GetRandomValue(0, 359);
+	//	float radius = 500.0f;
+	//	Vector2 startPos = {
+	//		radius * cosf(DEG2RAD * angle),
+	//		radius * sinf(DEG2RAD * angle)
+	//	};
+	//}
 }
-
-void Game::ChangeState(std::unique_ptr<GameState> newState) { m_currentState = std::move(newState); }

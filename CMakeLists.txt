@@ -17,46 +17,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(raylib)
 
 add_executable(raylib_TowerDefense src/main.cpp
-        src/TowerManager.cpp
-        src/Game.cpp
-        src/PlayingState.cpp
-        src/DebugMap.cpp
-        src/MainMenuState.cpp
-        src/EnemyDatabase.cpp
-        src/WaveDatabase.cpp
-        include/ParticleManager.h
-        src/ParticleManager.cpp
-        include/DrawCenteredRectangle.h
-        include/towers/Cannon.h
-        src/towers/Cannon.cpp
-)
 
-target_include_directories(raylib_TowerDefense PRIVATE include)
+ "src/Engine.h" "src/Engine.cpp" "src/UI.h"  
+ "src/CameraController.h" "src/Game.h" "src/Game.cpp" "src/Enemy.h"  
+ "src/Tower.h" "src/EnemyManager.h" "src/EnemyManager.cpp" "src/TowerManager.h" 
+ "src/TowerManager.cpp" "src/Projectile.h" "src/Utils.h")
+
+target_include_directories(raylib_TowerDefense PRIVATE ${raylib_SOURCE_DIR}/src)
 target_link_libraries(raylib_TowerDefense PRIVATE raylib)
-
-add_custom_command(TARGET raylib_TowerDefense POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/textures $<TARGET_FILE_DIR:raylib_TowerDefense>/textures
-)
-
-add_executable(TexturesToCode src/scripts/TexturesToCode.cpp)
-target_link_libraries(TexturesToCode PRIVATE raylib)
-
-set(GENERATED_TEXTURES_DIR ${CMAKE_BINARY_DIR}/generated_textures/textures)
-set(GENERATED_STAMP ${CMAKE_BINARY_DIR}/generated_textures/.generated)
-
-add_custom_command(
-    OUTPUT ${GENERATED_STAMP}
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${GENERATED_TEXTURES_DIR}
-        COMMAND $<TARGET_FILE:TexturesToCode> ${CMAKE_SOURCE_DIR}/textures ${GENERATED_TEXTURES_DIR}
-    COMMAND ${CMAKE_COMMAND} -E touch ${GENERATED_STAMP}
-    DEPENDS TexturesToCode
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Generating texture headers into ${GENERATED_TEXTURES_DIR}"
-)
-
-add_custom_target(generate_textures DEPENDS ${GENERATED_STAMP})
-
-add_dependencies(raylib_TowerDefense generate_textures)
-
-target_include_directories(raylib_TowerDefense PRIVATE ${CMAKE_BINARY_DIR}/generated_textures)
