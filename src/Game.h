@@ -7,8 +7,10 @@ namespace Game {
 		PAUSED,
 		GAME_OVER
 	};
-
-	void Init();
+	// load textures for the towers (not implemented yet)
+	//void Init();
+	// main game logic such as enemy, towers, camera
 	void Update();
+	// draw all the main game stuff
 	void Draw();
 }

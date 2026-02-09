@@ -8,7 +8,9 @@
 struct EnemyManager {
 	EnemyManager(Vector2 target);
 
+	// enemy movement & cleanup
 	void Update(float dt);
+	// draw enemies
 	void Draw() const;
 	
 	// returns reference to enemies for the towers to loop through

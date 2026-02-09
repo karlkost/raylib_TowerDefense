@@ -8,10 +8,8 @@
 struct TowerManager {
 	// tower shooting and projecitles
 	void Update(float dt, std::vector<Enemy>& enemies);
-
-	// draw towers, tower placement, and selected tower
+	// draw tower stuff and projectiles
 	void Draw() const;
-
 private:
 	// container for the towers placed
 	std::vector<Tower> _towers;

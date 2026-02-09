@@ -117,6 +117,4 @@ void TowerManager::Draw() const {
 	for (const Tower& tower : _towers) {
 		DrawCircleV(tower.position, 10.0f, BLUE);
 	}
-
-	
 }

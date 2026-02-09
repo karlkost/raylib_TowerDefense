@@ -4,7 +4,6 @@
 
 int main() {
 	Engine::Init();
-	Game::Init();
 
 	while (!WindowShouldClose()) {
 		Engine::UpdateGlobals();
